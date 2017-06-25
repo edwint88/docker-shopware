@@ -1,0 +1,4 @@
+[auth]
+bb.prefix=http://myrepo.com/hg/
+bb.username = user
+bb.password = pass

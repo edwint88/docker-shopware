@@ -1,0 +1,23 @@
+version: "2"
+services:
+  web:
+    build: ./web/
+    depends_on:
+      - db
+    # replace username/repo:tag with your name and image details
+    image: niwde/shopware-dev
+    ports:
+      - "8000:80"
+      - "9000:9000"
+    #networks:
+      #- webnet
+  db:
+    build: ./db/
+    image: niwde/mysql
+    ports:
+      - "3306:3306"
+    #networks:
+      #- webnet
+#networks:
+  #webnet:
+    #driver: bridge
