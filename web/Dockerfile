@@ -1,8 +1,8 @@
 #Dockerfile
-FROM php:5.6-apache
+FROM php:7.1.10-apache
 
 #init image
-LABEL Description="This image is used to start the php5.6 server with Shopware for dev" Vendor="niwde" Version="1.0"
+LABEL Description="This image is used to start the php7.1.10 server with Shopware for dev" Vendor="niwde" Version="1.0"
 ARG shop_version
 ARG shop_branch
 
@@ -31,10 +31,6 @@ RUN apt-get update && apt-get install openssl -y
 RUN apt-get update && apt-get install git -y
 # Install unzip
 RUN apt-get update && apt-get install -y unzip
-# Install mercurial
-#RUN apt-get update && apt-get install -q -y mercurial
-#to use with mercurial without prompting user and pass
-#COPY config/.hgrc /home/shopware/
 
 #PHP extensions
 # Install bz2
@@ -48,10 +44,11 @@ RUN apt-get update && apt-get install -y \
 # Install php extensions: mysql mysqli pdo_mysql
 RUN docker-php-ext-install mysql mysqli pdo_mysql
 # Install ioncube
-ADD resources/ioncube.tar.gz /home/shopware/Downloads/
-RUN cd /home/shopware/Downloads/ \
-    && mv ioncube/ioncube_loader_lin_5.6.so /usr/local/lib/php/extensions/* \
-	&& echo "zend_extension=ioncube_loader_lin_5.6.so" > /usr/local/etc/php/conf.d/00_docker-php-ext-ioncube_loader_lin_5.6.ini
+RUN cd /home/webshop/Downloads/ \
+	&& curl -O http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
+	&& tar xvfz ioncube_loaders_lin_x86-64.tar.gz
+    && mv ioncube/ioncube_loader_lin_7.1.so /usr/local/lib/php/extensions/* \
+	&& echo "zend_extension=ioncube_loader_lin_7.1.so" > /usr/local/etc/php/conf.d/00_docker-php-ext-ioncube_loader_lin_7.1.ini
 # Install mcrypt
 RUN apt-get update && apt-get install -y \
         libmcrypt-dev \
@@ -83,7 +80,7 @@ RUN apt-get update && apt-get install -y \
 		php-soap \
 	&& docker-php-ext-install -j$(nproc) soap
 # Install xdebug
-RUN apt-get update && apt-get install php5-xdebug -y \
+RUN apt-get update && apt-get install php7-xdebug -y \
 	&& pecl install xdebug-2.5.5 \
 	&& docker-php-ext-enable xdebug
 # Install gettext && mbstring
